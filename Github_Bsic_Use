@@ -46,6 +46,16 @@ git push -u origin master
 
 
 
+11.當本地檔案有更新
+//先查看目前異動項目有那些
+git status
+//把所有有意動的資料加入上傳行列
+git add -A
+//描述此次上傳說明
+git commit -a -m "Second commit"
+//執行上傳
+git push
+
 
 
 

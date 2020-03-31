@@ -1,0 +1,62 @@
+總共需要文件:
+1.'yolov3-custom.cfg' 置於config
+2.'custom.data' 置於config
+3.train.txt置於data/custom/
+4.valid.txt置於data/custom/
+5.classes.names置於data/custom/
+6.須訓練的標籤置於data/custom/labels
+7.須訓練的影像置於data/custom/images
+
+------------------文件一
+1.建立客製化模型架構
+	#進入config資料夾
+	$ cd config/
+	# 建立 'yolov3-custom.cfg'
+	# <num-classes> : 總共要訓練幾類(int)
+	$ bash create_custom_model.sh <num-classes>
+------------------文件二
+1.手動修改
+classes= 2
+train=data/custom/train.txt
+valid=data/custom/valid.txt
+names=data/custom/classes.names
+------------------文件三、文件四、文件五統一透過Transform_Data.py以及Split_Train_Date.py產出
+1.下載圖像(Google Dataset)
+python3 main.py downloader --classes "Human head" Car --type_csv train --limit 1000
+2.執行Transform_Data.py
+產出classes.names(文件五)
+產出imgtotalpath.txt(作為Split_Train_Date.py Input)
+產出labeltotalpath.txt(作為Split_Train_Date.py Input)
+3.執行Split_Train_Date.py
+產出train.txt(文件三)
+產出valid.txt(文件四)
+------------------文件六
+1.移動標籤集至data/custom/labels/
+->每一類須搬遷一次 mv /home/darren/DeepLearning/OIDv4_ToolKit/OID/Dataset/train/Human\ head/Label/ /home/darren/DeepLearning/PyTorch-YOLOv3/data/custom/labels/
+->每一類須搬遷一次 mv /home/darren/DeepLearning/OIDv4_ToolKit/OID/Dataset/train/Car/Label/ /home/darren/DeepLearning/PyTorch-YOLOv3/data/custom/labels/
+須將檔案放置在label記得取出
+------------------文件七
+1.移動訓練圖像集至data/custom/images/   
+->每一類須搬遷一次 mv /home/darren/DeepLearning/OIDv4_ToolKit/OID/Dataset/train/Human\ head/ /home/darren/DeepLearning/PyTorch-YOLOv3/data/custom/images/
+->每一類須搬遷一次 mv /home/darren/DeepLearning/OIDv4_ToolKit/OID/Dataset/train/Car/ /home/darren/DeepLearning/PyTorch-YOLOv3/data/custom/images/
+須將檔案放置在label記得取出
+
+
+"""
+------------------執行訓練
+	python3 train.py --model_def config/yolov3-custom.cfg --data_config config/custom.data --pretrained_weights weights/darknet53.conv.74
+------------------計算map
+	python3 test.py --model_def config/yolov3-custom.cfg --data_config config/custom.data --weights_path checkpoints/yolov3_ckpt_99.pth
+------------------查看完整訓練曲線
+	tensorboard --logdir='logs' --port=6006
+------------------辨識物件
+	python3 detect2.py --weights_path checkpoints/yolov3_ckpt_99.pth --model_def config/yolov3-custom.cfg --image_folder data/custom/detect --class_path data/custom/classes.names
+------------------辨識物件影像串流
+	python3 video_detect.py --weights_path checkpoints/yolov3_ckpt_99.pth --model_def config/yolov3-custom.cfg --class_path data/custom/classes.names
+	python3 video_detect.py --weights_path checkpoints/tiny/yolov3_ckpt_15.pth --model_def config/yolov3-tiny.cfg --class_path data/custom/classes.names
+------------------辨識影像物件
+	python3 image_detect.py --weights_path checkpoints/yolov3_ckpt_95.pth --model_def config/yolov3-custom.cfg --class_path data/custom/classes.names --img_file ./humanhead.jpg
+------------------物件追蹤系統
+python3 video_tracking.py --weights_path checkpoints/tiny/yolov3_ckpt_15.pth --model_def config/yolov3-tiny.cfg --class_path data/custom/classes.names
+------------------pth轉onnx : 
+	python3 pytorchyolov3_to_onnx.py --weights_path checkpoints/yolov3_ckpt_95.pth --model_def config/yolov3-custom.cfg --img_size 416 yolo_last_conv_filters_num 21 
