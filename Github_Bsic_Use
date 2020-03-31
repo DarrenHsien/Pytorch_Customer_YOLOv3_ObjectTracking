@@ -1,0 +1,65 @@
+1.cmd進入一個空目錄作為對應git server的對應資料夾（本地操作）
+
+2.在GIthub 網頁端創建一個新的Repository（遠端操作）
+
+3.在本地目錄先新增一個readme.md描述檔（本地操作）
+echo "# Practicing Git" > README.md
+
+4.替本地機器創建ssh密鑰（本地操作）
+//git紀錄github上帳號名稱
+git config --global user.name "DarrenHsien"
+//git紀錄github上帳號信箱
+git config --global user.email "jas720434@gmail.com"
+//進入ssh資料夾
+cd ~/.ssh
+//查看是否乙存在此兩檔案id_rsa和id_rsa.pub
+//若沒有則生成金鑰
+ssh-keygen -t rsa -C “jas720434@gmail.com”
+//查看金鑰內容並複製內容
+vim id_rsa.pub
+
+5.連結對應repository -> setting -> Deploy keys -> Add Keys （遠端操作）
+//貼上金鑰內容
+
+6.初始化本地目錄git環境（本地操作）
+git init
+
+7.增添檔案readme.md（本地操作）
+git add README.md
+
+8.建立此次上傳描述（本地操作）
+git commit -m "first commit"（本地操作）
+
+9.正式推資料至遠端repository前置作業（本地操作）
+//remote : 遠端操作
+//add : 加入一個遠端的節點
+//origin : 指的是後面那一串名稱的代名詞
+git remote add origin git@github.com:DarrenHsien/Pytorch_Customer_YOLOv3_ObjectTracking.git
+
+10.驅動上傳（本地操作）
+//把 master 這個分支的內容，推向 origin 這個位置
+//在 origin 那個遠端 Server上，如果master不存在，就建立一個叫做master的同名分支
+//但如果本來 Server 上就存在 master 分支，便會移動 Server 上 master 分支的位置，使它指到目前最新的進度上
+//-u 就會把origin/master設定為本地master分支的upstream，當下回執行git push指令而不加任何參數的時候，它就會猜你是要推往origin這個遠端節點，並且把master這個分支推上去
+//反之，沒設定 upstream 的話，就必須在每次 Push 的時候都跟 Git 講清楚、說明白 git push origin master
+git push -u origin master
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
