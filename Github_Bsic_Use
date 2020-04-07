@@ -44,8 +44,6 @@ git remote add origin git@github.com:DarrenHsien/Pytorch_Customer_YOLOv3_ObjectT
 //反之，沒設定 upstream 的話，就必須在每次 Push 的時候都跟 Git 講清楚、說明白 git push origin master
 git push -u origin master
 
-
-
 11.當本地檔案有更新
 //先查看目前異動項目有那些
 git status
@@ -55,6 +53,8 @@ git add -A
 git commit -a -m "Second commit"
 //執行上傳
 git push
+
+
 
 
 
